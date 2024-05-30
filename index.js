@@ -28,9 +28,10 @@ async function run() {
         await client.connect();
         // Send a ping to confirm a successful connection
 
-
+        // Data Base Collection----------------------
         const etapCollection = client.db('etap-eCommerce-collection').collection('etap-collection');
         const allProducts = client.db('etap-eCommerce-collection').collection('allProducts');
+        const wishlistCollection = client.db('etap-eCommerce-collection').collection('wishlists');
 
         // Etap-Collection----------
         app.get('/etap-collection', async (req, res) => {
@@ -55,6 +56,19 @@ async function run() {
             const filter = { _id: new ObjectId(id) }
             const result = await allProducts.findOne(filter)
             res.send(result)
+        })
+
+        // Wishlist Post ----------------------
+        app.post('/wishlist', async (req, res) => {
+            const doc = req.body;
+            const result = await wishlistCollection.insertOne(doc);
+            res.send(result)
+        });
+
+        app.get('/wishlist', async (req, res) => {
+            const query = {};
+            const result = await wishlistCollection.find(query).toArray();
+            res.send(result);
         })
 
 
