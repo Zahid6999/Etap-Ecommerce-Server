@@ -32,6 +32,7 @@ async function run() {
         const etapCollection = client.db('etap-eCommerce-collection').collection('etap-collection');
         const allProducts = client.db('etap-eCommerce-collection').collection('allProducts');
         const wishlistCollection = client.db('etap-eCommerce-collection').collection('wishlists');
+        const addToCartCollection = client.db('etap-eCommerce-collection').collection('addToCart');
 
         // Etap-Collection----------
         app.get('/etap-collection', async (req, res) => {
@@ -69,6 +70,26 @@ async function run() {
             const query = {};
             const result = await wishlistCollection.find(query).toArray();
             res.send(result);
+        })
+        app.delete('/wishlist/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await wishlistCollection.deleteOne(query);
+
+            res.send(result);
+            console.log(query, result)
+        });
+
+        // =================Add to cart api==================
+        app.post('/add-to-cart', async (req, res) => {
+            const cartDoc = req.body;
+            const result = await addToCartCollection.insertOne(cartDoc)
+            res.send(result)
+        });
+
+        app.get('/add-to-cart', async (req, res) => {
+            const result = await addToCartCollection.find().toArray();
+            res.send(result)
         })
 
 
